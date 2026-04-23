@@ -3,11 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VRChat UI Controls</title>
+<title>Emoji UI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
+:root {
+    --emoji-size: 4rem;
+    --glow: 10px;
+    --grid-speed: 10s;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -16,9 +22,9 @@
 
 body {
     height: 100vh;
+    overflow: hidden;
     background: #05060a;
     font-family: 'Orbitron', sans-serif;
-    overflow: hidden;
     color: white;
 }
 
@@ -27,31 +33,17 @@ body {
     position: absolute;
     width: 200%;
     height: 200%;
-    background-image: linear-gradient(rgba(0,255,255,0.08) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(0,255,255,0.08) 1px, transparent 1px);
+    background-image:
+        linear-gradient(rgba(0,255,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,0.08) 1px, transparent 1px);
     background-size: 50px 50px;
     transform: perspective(500px) rotateX(60deg);
-    animation: moveGrid var(--grid-speed, 10s) linear infinite;
+    animation: moveGrid var(--grid-speed) linear infinite;
 }
 
 @keyframes moveGrid {
     from { transform: perspective(500px) rotateX(60deg) translateY(0); }
     to { transform: perspective(500px) rotateX(60deg) translateY(50px); }
-}
-
-/* SCANLINES */
-.scanlines {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.03),
-        rgba(255,255,255,0.03) 1px,
-        transparent 1px,
-        transparent 3px
-    );
-    pointer-events: none;
 }
 
 /* PANEL */
@@ -68,23 +60,22 @@ body {
 }
 
 .panel-header {
+    color: cyan;
     font-weight: bold;
     margin-bottom: 10px;
-    color: cyan;
-    cursor: grab;
 }
 
 /* EMOJI */
 .emoji {
-    font-size: var(--emoji-size, 4rem);
+    font-size: var(--emoji-size);
     text-align: center;
 }
 
 /* TEXT */
 h1 {
     font-size: 1rem;
-    margin-top: 10px;
-    text-shadow: 0 0 var(--glow, 10px) cyan;
+    text-align: center;
+    text-shadow: 0 0 var(--glow) cyan;
 }
 
 /* BUTTON */
@@ -100,10 +91,6 @@ a {
     box-shadow: 0 0 10px cyan;
 }
 
-a:hover {
-    box-shadow: 0 0 30px cyan, 0 0 60px magenta;
-}
-
 /* CONTROLS */
 .control {
     margin: 10px 0;
@@ -115,7 +102,6 @@ label {
     margin-bottom: 5px;
 }
 
-/* SLIDERS */
 input[type="range"] {
     width: 100%;
     accent-color: cyan;
@@ -124,9 +110,9 @@ input[type="range"] {
 /* TOGGLES */
 .toggle {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin: 8px 0;
+    margin-top: 10px;
+    align-items: center;
 }
 
 .switch {
@@ -141,30 +127,22 @@ input[type="range"] {
 
 .slider {
     position: absolute;
-    cursor: pointer;
-    background: #333;
+    inset: 0;
+    background: #222;
     border-radius: 20px;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    transition: 0.3s;
+    cursor: pointer;
 }
 
 .slider::before {
     content: "";
     position: absolute;
-    height: 14px;
     width: 14px;
-    left: 3px;
-    bottom: 3px;
+    height: 14px;
     background: cyan;
     border-radius: 50%;
+    left: 3px;
+    top: 3px;
     transition: 0.3s;
-}
-
-input:checked + .slider {
-    background: rgba(0,255,255,0.3);
 }
 
 input:checked + .slider::before {
@@ -176,53 +154,43 @@ input:checked + .slider::before {
 <body>
 
 <div class="grid" id="grid"></div>
-<div class="scanlines" id="scanlines"></div>
 
-<!-- MAIN PANEL -->
+<!-- MAIN -->
 <div class="panel" id="panel1" style="top:100px; left:100px;">
     <div class="panel-header">Main UI</div>
 
     <div class="emoji">😎</div>
-    <h1 id="text">This website was just for this emoji</h1>
 
-    <a href="https://guns.lol/zilofr" target="_blank">Visit Site</a>
+    <h1>This website was just for this emoji</h1>
+
+    <a href="https://guns.lol/zilofr" target="_blank">
+        Visit Source
+    </a>
 </div>
 
-<!-- SETTINGS PANEL -->
+<!-- SETTINGS -->
 <div class="panel" id="panel2" style="top:120px; left:500px;">
     <div class="panel-header">Settings</div>
 
-    <!-- Emoji size -->
     <div class="control">
         <label>Emoji Size</label>
         <input type="range" min="2" max="8" value="4" id="emojiSize">
     </div>
 
-    <!-- Glow -->
     <div class="control">
-        <label>Glow Strength</label>
+        <label>Glow</label>
         <input type="range" min="0" max="30" value="10" id="glow">
     </div>
 
-    <!-- Grid speed -->
     <div class="control">
         <label>Grid Speed</label>
         <input type="range" min="2" max="20" value="10" id="gridSpeed">
     </div>
 
-    <!-- Toggles -->
     <div class="toggle">
         <span>Grid</span>
         <label class="switch">
             <input type="checkbox" id="gridToggle" checked>
-            <span class="slider"></span>
-        </label>
-    </div>
-
-    <div class="toggle">
-        <span>Scanlines</span>
-        <label class="switch">
-            <input type="checkbox" id="scanToggle" checked>
             <span class="slider"></span>
         </label>
     </div>
@@ -231,46 +199,36 @@ input:checked + .slider::before {
 <script>
 /* DRAG */
 document.querySelectorAll(".panel").forEach(panel => {
-    let dragging = false, offsetX, offsetY;
+    let dragging = false, ox, oy;
 
     panel.querySelector(".panel-header").addEventListener("mousedown", e => {
         dragging = true;
-        offsetX = e.clientX - panel.offsetLeft;
-        offsetY = e.clientY - panel.offsetTop;
+        ox = e.clientX - panel.offsetLeft;
+        oy = e.clientY - panel.offsetTop;
     });
 
     document.addEventListener("mousemove", e => {
         if (!dragging) return;
-        panel.style.left = (e.clientX - offsetX) + "px";
-        panel.style.top = (e.clientY - offsetY) + "px";
+        panel.style.left = (e.clientX - ox) + "px";
+        panel.style.top = (e.clientY - oy) + "px";
     });
 
     document.addEventListener("mouseup", () => dragging = false);
 });
 
 /* SLIDERS */
-const emoji = document.querySelector(".emoji");
-
-document.getElementById("emojiSize").oninput = e => {
+emojiSize.oninput = e =>
     document.documentElement.style.setProperty("--emoji-size", e.target.value + "rem");
-};
 
-document.getElementById("glow").oninput = e => {
+glow.oninput = e =>
     document.documentElement.style.setProperty("--glow", e.target.value + "px");
-};
 
-document.getElementById("gridSpeed").oninput = e => {
+gridSpeed.oninput = e =>
     document.documentElement.style.setProperty("--grid-speed", e.target.value + "s");
-};
 
-/* TOGGLES */
-document.getElementById("gridToggle").onchange = e => {
+/* TOGGLE */
+gridToggle.onchange = e =>
     document.getElementById("grid").style.display = e.target.checked ? "block" : "none";
-};
-
-document.getElementById("scanToggle").onchange = e => {
-    document.getElementById("scanlines").style.display = e.target.checked ? "block" : "none";
-};
 </script>
 
 </body>
